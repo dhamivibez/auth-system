@@ -46,7 +46,7 @@ export const authPlugin = new Elysia().use(jwtPlugin).macro({
 					httpOnly: true,
 					secure: true,
 					sameSite: "none",
-					maxAge: 15 * 60 * 1000,
+					maxAge: 15 * 60,
 				});
 
 				return {

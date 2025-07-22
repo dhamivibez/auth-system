@@ -23,7 +23,7 @@ export const auth = new Elysia({ prefix: "/auth" })
 				secure: true,
 				sameSite: "none",
 				path: "/",
-				maxAge: 15 * 60 * 1000,
+				maxAge: 15 * 60,
 			});
 
 			cookie["__Secure-refresh-token"]?.set({
@@ -32,7 +32,7 @@ export const auth = new Elysia({ prefix: "/auth" })
 				secure: true,
 				sameSite: "none",
 				path: "/",
-				maxAge: 7 * 24 * 60 * 60 * 1000,
+				maxAge: 7 * 24 * 60 * 60,
 			});
 
 			return { success: true };
