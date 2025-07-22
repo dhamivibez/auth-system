@@ -1,8 +1,7 @@
 import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-
-const CORS_ORIGIN = process.env.CORS_ORIGIN;
+import { CORS_ORIGIN } from "env";
 
 export const app = new Elysia()
 	.use(swagger({ path: "/docs", documentation: { info: { title: "Auth system", version: "1.0.0" } } }))

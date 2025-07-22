@@ -1,10 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-
-const DATABASE_URL = process.env.DATABASE_URL;
-
-if (!DATABASE_URL) {
-	throw new Error("No database url found");
-}
+import { DATABASE_URL } from "env";
 
 export default defineConfig({
 	out: "./drizzle",
