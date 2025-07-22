@@ -18,3 +18,12 @@ export const profileResponseSchema = {
 	404: errorResponse,
 	500: errorResponse,
 };
+
+export const updateProfileSchema = t.Object({
+	username: t.Optional(t.String({ error: "Invalid username" })),
+	email: t.Optional(t.String({ format: "email", error: "Invalid Email" })),
+	firstName: t.Optional(t.String()),
+	lastName: t.Optional(t.String()),
+});
+
+export type UpdateProfileSchema = typeof updateProfileSchema.static;
