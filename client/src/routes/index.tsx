@@ -25,6 +25,12 @@ function RouteComponent() {
 					>
 						Sign Up
 					</a>
+					<a
+						href="/profile"
+						className="inline-block w-full sm:w-auto bg-green-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105 animate-bounce-in delay-200"
+					>
+						Profile
+					</a>
 				</div>
 			</div>
 		</div>
