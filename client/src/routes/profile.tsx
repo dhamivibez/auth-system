@@ -15,12 +15,14 @@ function ProfilePage() {
 		lastName: "",
 		username: "",
 		email: "",
+		lastLogin: "", // Holds the last login timestamp
 	});
 	const [editedUserData, setEditedUserData] = useState({
 		firstName: "",
 		lastName: "",
 		username: "",
 		email: "",
+		// lastLogin is intentionally not included here as it's not user-editable
 	});
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
@@ -39,7 +41,15 @@ function ProfilePage() {
 				const data = await response.json();
 				if (response.ok && data.success) {
 					setUserData(data.data);
-					setEditedUserData(data.data);
+					setEditedUserData({
+						firstName: data.data.firstName,
+						lastName: data.data.lastName,
+						username: data.data.username,
+						email: data.data.email,
+					});
+				} else if (response.status === 401) {
+					setErrorMessage(data.message || "Session Expired");
+					navigate({ to: "/auth/login" });
 				} else {
 					setErrorMessage(data.message || "Failed to load profile data.");
 				}
@@ -52,7 +62,7 @@ function ProfilePage() {
 		};
 
 		fetchUserData();
-	}, []);
+	}, [navigate]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -81,13 +91,20 @@ function ProfilePage() {
 					"Content-Type": "application/json",
 				},
 				credentials: "include",
-				body: JSON.stringify(editedUserData),
+				// Explicitly send only the editable fields; lastLogin is excluded
+				body: JSON.stringify({
+					firstName: editedUserData.firstName,
+					lastName: editedUserData.lastName,
+					username: editedUserData.username,
+					email: editedUserData.email,
+				}),
 			});
 
 			const data = await response.json();
 
 			if (response.ok && data.success) {
-				setUserData(editedUserData);
+				// Update userData with the edited data (and keep existing lastLogin)
+				setUserData((prev) => ({ ...prev, ...editedUserData }));
 				setSuccessMessage("Profile updated successfully!");
 				setIsEditing(false);
 			} else {
@@ -130,6 +147,18 @@ function ProfilePage() {
 			setTimeout(() => {
 				navigate({ to: "/auth/login" });
 			}, 1000);
+		}
+	};
+
+	// Helper function to format the lastLogin date
+	const formatLastLogin = (dateString: string) => {
+		if (!dateString) return "N/A";
+		try {
+			const date = new Date(dateString);
+			return date.toLocaleString();
+		} catch (error) {
+			console.error("Error formatting date:", error);
+			return "Invalid Date";
 		}
 	};
 
@@ -239,7 +268,12 @@ function ProfilePage() {
 								type="button"
 								onClick={() => {
 									setIsEditing(false);
-									setEditedUserData(userData);
+									setEditedUserData({
+										firstName: userData.firstName,
+										lastName: userData.lastName,
+										username: userData.username,
+										email: userData.email,
+									});
 									setErrorMessage("");
 									setSuccessMessage("");
 								}}
@@ -284,9 +318,13 @@ function ProfilePage() {
 								<span className="font-medium">Username:</span>
 								<span>{userData.username}</span>
 							</div>
-							<div className="flex justify-between items-center py-2">
+							<div className="flex justify-between items-center py-2 border-b border-gray-200">
 								<span className="font-medium">Email:</span>
 								<span>{userData.email}</span>
+							</div>
+							<div className="flex justify-between items-center py-2">
+								<span className="font-medium">Last Login:</span>
+								<span>{formatLastLogin(userData.lastLogin)}</span>
 							</div>
 						</div>
 
