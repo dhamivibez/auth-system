@@ -41,3 +41,19 @@ export const logoutResponseSchema = {
 	}),
 	500: errorResponse,
 };
+
+export const resetPasswordSchema = t.Object({
+	username: t.String({ minLength: 1, error: "Invalid Username" }),
+	email: t.String({ format: "email", error: "Invalid Email" }),
+	password: t.String({ minLength: 6, error: "Password should be at least six characters" }),
+});
+
+export type ResetPasswordSchema = typeof resetPasswordSchema.static;
+
+export const resetPasswordResponseSchema = {
+	200: t.Object({
+		success: t.Boolean(),
+	}),
+	400: errorResponse,
+	500: errorResponse,
+};

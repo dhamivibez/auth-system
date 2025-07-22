@@ -1,5 +1,6 @@
+import { and, eq } from "drizzle-orm";
 import { status } from "elysia";
-import type { LoginSchema, SignupSchema } from "@/auth/model";
+import type { LoginSchema, ResetPasswordSchema, SignupSchema } from "@/auth/model";
 import { db } from "@/db/db";
 import { refreshTokens, users } from "@/db/schema";
 import { checkIdentifier, checkUser, generateRefreshToken, hashPassword, hashRefreshToken, verifyPassword } from "@/utils/auth";
@@ -44,4 +45,22 @@ export const login = async ({ body, ipAddress, userAgent }: { body: LoginSchema;
 	await db.update(users).set({ lastLogin: new Date() });
 
 	return { userId: user.id, refreshToken };
+};
+
+export const forgotPassword = async ({ body }: { body: ResetPasswordSchema }) => {
+	const { email, username, password } = body;
+
+	const user = await db.query.users.findFirst({
+		where: and(eq(users.email, email), eq(users.username, username)),
+	});
+
+	if (!user) {
+		throw status(400, "Invalid credentials");
+	}
+
+	const hashedPassword = await hashPassword(password);
+
+	await db.update(users).set({ password: hashedPassword });
+
+	return { success: true };
 };

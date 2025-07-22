@@ -1,6 +1,6 @@
 import Elysia from "elysia";
-import { authResponseSchema, loginSchema, logoutResponseSchema, signupSchema } from "@/auth/model";
-import { login, signup } from "@/auth/service";
+import { authResponseSchema, loginSchema, logoutResponseSchema, resetPasswordResponseSchema, resetPasswordSchema, signupSchema } from "@/auth/model";
+import { forgotPassword, login, signup } from "@/auth/service";
 import { jwtPlugin } from "@/plugins/jwtPlugin";
 import { deleteRefreshToken } from "@/utils/auth";
 
@@ -73,4 +73,5 @@ export const auth = new Elysia({ prefix: "/auth" })
 			authenticated: true,
 			response: logoutResponseSchema,
 		},
-	);
+	)
+	.post("/forgot-password", ({ body }) => forgotPassword({ body }), { body: resetPasswordSchema, response: resetPasswordResponseSchema });
