@@ -19,11 +19,25 @@ export const signupSchema = t.Object({
 
 export type SignupSchema = typeof signupSchema.static;
 
-export const signupResponseSchema = {
+export const authResponseSchema = {
 	200: t.Object({
 		success: t.Boolean(),
 	}),
 	400: errorResponse,
 	422: errorResponse,
+	500: errorResponse,
+};
+
+export const loginSchema = t.Object({
+	identifier: t.String({ minLength: 1, error: "Username or Email is required" }),
+	password: t.String({ minLength: 6, error: "Password should be at least six characters" }),
+});
+
+export type LoginSchema = typeof loginSchema.static;
+
+export const logoutResponseSchema = {
+	200: t.Object({
+		success: t.Boolean(),
+	}),
 	500: errorResponse,
 };
