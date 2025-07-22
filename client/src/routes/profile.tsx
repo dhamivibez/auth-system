@@ -30,7 +30,7 @@ function ProfilePage() {
 				});
 				const data = await response.json();
 				if (response.ok) {
-					setUserData(data.user);
+					setUserData(data.data);
 				} else {
 					setErrorMessage(data.message || "Failed to load profile data.");
 				}
