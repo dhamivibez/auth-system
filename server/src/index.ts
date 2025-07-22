@@ -1,3 +1,11 @@
+import cors from "@elysiajs/cors";
+import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
-export const app = new Elysia().get("/", () => "A full auth system").listen(3000);
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
+
+export const app = new Elysia()
+	.use(swagger({ path: "/docs", documentation: { info: { title: "Auth system", version: "1.0.0" } } }))
+	.get("/", () => "A full auth system")
+	.use(cors({ origin: CORS_ORIGIN }))
+	.listen(3000);
