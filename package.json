@@ -1,0 +1,19 @@
+{
+  "name": "auth-system",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "client/",
+    "server/"
+  ],
+  "scripts": {
+    "client": "bun --cwd client/ dev",
+    "server": "bun --cwd server/ dev"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
