@@ -1,13 +1,13 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <'explanation'> */
-import { createFileRoute } from "@tanstack/react-router";
+
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { API } from "@/routes/__root";
 
 // Define the route for the signup page
 export const Route = createFileRoute("/auth/signup")({
 	component: SignupComponent,
 });
-
-const API = import.meta.env.VITE_API_URL;
 
 // Main component for the signup page
 function SignupComponent() {
@@ -190,10 +190,10 @@ function SignupComponent() {
 				</form>
 
 				<div className="mt-8 text-center text-sm text-gray-600">
-					Already have an account?{" "}
-					<a href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500 transition duration-200 ease-in-out">
+					Already have an account?
+					<Link to="/auth/login" className="font-medium text-blue-600 hover:text-blue-500 transition duration-200 ease-in-out">
 						Sign in
-					</a>
+					</Link>
 				</div>
 			</div>
 		</div>

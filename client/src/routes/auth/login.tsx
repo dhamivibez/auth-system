@@ -1,13 +1,13 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <'explanation'> */
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { API } from "@/routes/__root";
 
 // Define the route for the login page
 export const Route = createFileRoute("/auth/login")({
 	component: RouteComponent,
 });
-
-const API = import.meta.env.VITE_API_URL;
 
 function RouteComponent() {
 	const navigate = useNavigate();
@@ -105,9 +105,9 @@ function RouteComponent() {
 
 					<div className="flex items-center justify-end">
 						<div className="text-sm">
-							<a href="/" className="font-medium text-blue-600 hover:text-blue-500 transition duration-200 ease-in-out">
+							<Link to="/auth/reset-password" className="font-medium text-blue-600 hover:text-blue-500 transition duration-200 ease-in-out">
 								Forgot your password?
-							</a>
+							</Link>
 						</div>
 					</div>
 
@@ -133,9 +133,9 @@ function RouteComponent() {
 
 				<div className="mt-8 text-center text-sm text-gray-600">
 					Don't have an account?
-					<a href="/auth/signup" className="font-medium pl-1 text-blue-600 hover:text-blue-500 transition duration-200 ease-in-out">
+					<Link to="/auth/signup" className="font-medium pl-1 text-blue-600 hover:text-blue-500 transition duration-200 ease-in-out">
 						Sign up
-					</a>
+					</Link>
 				</div>
 			</div>
 		</div>
