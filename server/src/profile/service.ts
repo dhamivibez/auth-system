@@ -18,4 +18,6 @@ export const updateProfile = async ({ body, userId }: { body: UpdateProfileSchem
 		.update(users)
 		.set({ username: username || users.username, email: email || users.email, firstName: firstName || users.firstName, lastName: lastName ?? users.lastName })
 		.where(eq(users.id, userId));
+
+	return { success: true };
 };

@@ -27,3 +27,10 @@ export const updateProfileSchema = t.Object({
 });
 
 export type UpdateProfileSchema = typeof updateProfileSchema.static;
+
+export const updateProfileResponseSchema = {
+	200: t.Object({
+		success: t.Boolean(),
+	}),
+	500: errorResponse,
+};
