@@ -1,17 +1,15 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <'explanation'> */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-// Define the route for the profile page
 export const Route = createFileRoute("/profile")({
 	component: ProfilePage,
 });
 
-// Mock API URL (replace with your actual API endpoint if needed)
 const API = import.meta.env.VITE_API_URL;
 
 function ProfilePage() {
-	// State to hold user data
+	const navigate = useNavigate();
 	const [userData, setUserData] = useState({
 		firstName: "John",
 		lastName: "Doe",
@@ -20,15 +18,13 @@ function ProfilePage() {
 	});
 	const [isLoading, setIsLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState<string>("");
+	const [successMessage, setSuccessMessage] = useState("");
 
-	// In a real application, you would fetch user data here
 	useEffect(() => {
-		// Simulate fetching user data from an API
 		const fetchUserData = async () => {
 			setIsLoading(true);
 			setErrorMessage("");
 			try {
-				// In a real app, you'd make an authenticated fetch request
 				const response = await fetch(`${API}/profile`, {
 					credentials: "include",
 				});
@@ -38,15 +34,6 @@ function ProfilePage() {
 				} else {
 					setErrorMessage(data.message || "Failed to load profile data.");
 				}
-
-				// For now, simulate a delay and set mock data
-				await new Promise((resolve) => setTimeout(resolve, 1000));
-				setUserData({
-					firstName: "Jane",
-					lastName: "Smith",
-					username: "janesmith",
-					email: "jane.smith@example.com",
-				});
 			} catch (error) {
 				console.error("Error fetching user data:", error);
 				setErrorMessage("Could not load profile. Please try again.");
@@ -58,12 +45,35 @@ function ProfilePage() {
 		fetchUserData();
 	}, []);
 
-	const handleLogout = () => {
-		// In a real application, you would clear authentication tokens/session
-		// localStorage.removeItem('authToken');
-		// Redirect to login page or home page
-		alert("Logged out successfully! (In a real app, you'd be redirected)");
-		window.location.href = "/auth/login"; // Redirect to login page
+	const handleLogout = async () => {
+		setIsLoading(true);
+		setErrorMessage("");
+		setSuccessMessage("");
+
+		try {
+			const response = await fetch(`${API}/auth/logout`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			});
+
+			if (response.ok) {
+				setSuccessMessage("Logged out successfully!");
+			} else {
+				const errorData = await response.json();
+				setErrorMessage(errorData.message || "Logout failed on server.");
+				console.error("Logout error:", errorData);
+			}
+		} catch (error) {
+			setErrorMessage("An error occurred during logout. Please try again.");
+			console.error("Logout fetch error:", error);
+		} finally {
+			setIsLoading(false);
+
+			navigate({ to: "/auth/login" });
+		}
 	};
 
 	if (isLoading) {
@@ -92,6 +102,13 @@ function ProfilePage() {
 					</div>
 				)}
 
+				{successMessage && (
+					<div className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative" role="alert">
+						<strong className="font-bold">Success!</strong>
+						<span className="block sm:inline ml-2">{successMessage}</span>
+					</div>
+				)}
+
 				<div className="space-y-4 text-gray-700">
 					<div className="flex justify-between items-center py-2 border-b border-gray-200">
 						<span className="font-medium">First Name:</span>
@@ -99,7 +116,7 @@ function ProfilePage() {
 					</div>
 					<div className="flex justify-between items-center py-2 border-b border-gray-200">
 						<span className="font-medium">Last Name:</span>
-						<span>{userData.lastName || "N/A"}</span> {/* Display N/A if last name is empty */}
+						<span>{userData.lastName || "N/A"}</span>
 					</div>
 					<div className="flex justify-between items-center py-2 border-b border-gray-200">
 						<span className="font-medium">Username:</span>
@@ -111,13 +128,9 @@ function ProfilePage() {
 					</div>
 				</div>
 
-				<div className="mt-8">
-					{/** biome-ignore lint/a11y/useButtonType: <[explanation]> */}
-					<button
-						onClick={handleLogout}
-						className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-semibold text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 ease-in-out transform hover:scale-105"
-					>
-						Logout
+				<div>
+					<button type="button" onClick={handleLogout} disabled={isLoading}>
+						{isLoading ? "Logging out..." : "Logout"}
 					</button>
 				</div>
 			</div>
